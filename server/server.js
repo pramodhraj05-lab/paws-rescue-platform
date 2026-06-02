@@ -7,7 +7,7 @@ const connectDB = require("./db/connection");
 const app = express();
 
 // Connect to MongoDB
-// connectDB();
+connectDB();
 
 // Middleware
 app.use(helmet());
