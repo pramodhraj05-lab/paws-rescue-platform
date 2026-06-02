@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../api';
 import { useAuth } from '../AuthContext';
+import BreedSuggest from './BreedSuggest';
 
 export default function AnimalsView() {
   const { isAdmin } = useAuth();
@@ -151,7 +152,10 @@ export default function AnimalsView() {
                 </label>
               </div>
               <div className="form-row">
-                <label>Breed<input value={form.breed} onChange={(e) => setForm({ ...form, breed: e.target.value })} /></label>
+                <label>Breed
+                  <input value={form.breed} onChange={(e) => setForm({ ...form, breed: e.target.value })} />
+                    <BreedSuggest species={form.species} onSelect={(name) => setForm({ ...form, breed: name })} />
+                </label>
                 <label>Age (years)<input type="number" min="0" value={form.age} onChange={(e) => setForm({ ...form, age: e.target.value })} /></label>
               </div>
               <div className="form-row">
