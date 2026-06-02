@@ -20,6 +20,8 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 // Routes
 const authRoutes = require("./routes/auth");
 const animalRoutes = require("./routes/animals");
+const shelterRoutes = require("./routes/shelters");
+app.use("/shelters", shelterRoutes);
 app.use("/auth", authRoutes);
 app.use("/animals", animalRoutes);
 
