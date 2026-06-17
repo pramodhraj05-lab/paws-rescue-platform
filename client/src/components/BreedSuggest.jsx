@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const DOG_API = 'https://api.thedogapi.com/v1/breeds';
-const CAT_API = 'https://api.thecatapi.com/v1/breeds';
-
 export default function BreedSuggest({ species, onSelect }) {
   const [breeds, setBreeds] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,9 +15,22 @@ export default function BreedSuggest({ species, onSelect }) {
     setLoading(true);
     setError('');
     try {
-      const url = species === 'Dog' ? DOG_API : CAT_API;
-      const res = await axios.get(url);
-      setBreeds(res.data.slice(0, 30));
+      let list = [];
+      if (species === 'Dog') {
+        // Dog CEO API — free, no API key required
+        const res = await axios.get('https://dog.ceo/api/breeds/list/all');
+        list = Object.keys(res.data.message)
+          .slice(0, 30)
+          .map((name, idx) => ({
+            id: idx,
+            name: name.charAt(0).toUpperCase() + name.slice(1),
+          }));
+      } else {
+        // Cat API
+        const res = await axios.get('https://api.thecatapi.com/v1/breeds');
+        list = res.data.slice(0, 30).map((b) => ({ id: b.id, name: b.name }));
+      }
+      setBreeds(list);
       setOpen(true);
     } catch (err) {
       setError('Failed to fetch breeds');
@@ -32,7 +42,7 @@ export default function BreedSuggest({ species, onSelect }) {
   return (
     <div className="breed-suggest">
       <button type="button" className="btn-ghost btn-sm" onClick={fetchBreeds} disabled={loading}>
-        {loading ? 'Loading…' : `🔍 Get ${species} breeds`}
+        {loading ? 'Loading...' : `🔍 Get ${species} breeds`}
       </button>
       {error && <div className="breed-err">{error}</div>}
       {open && breeds.length > 0 && (
