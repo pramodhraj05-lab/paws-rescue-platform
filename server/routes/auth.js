@@ -12,6 +12,7 @@ const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
   message: { error: "Too many login attempts. Try again in 15 minutes." },
+  skip: () => process.env.NODE_ENV === "test",
 });
 
 // ── REGISTER ──
