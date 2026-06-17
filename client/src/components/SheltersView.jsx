@@ -45,6 +45,7 @@ export default function SheltersView() {
         </div>
       </div>
 
+      <SheltersMap shelters={shelters} />
       <div className="grid">
         {shelters.map((s) => {
           const pct = s.capacity ? Math.min(100, Math.round((s.animalCount / s.capacity) * 100)) : 0;
