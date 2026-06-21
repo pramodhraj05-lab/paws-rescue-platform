@@ -7,14 +7,16 @@ const rateLimit = require("express-rate-limit");
 const User = require("../db/models/User");
 const { authMiddleware, adminOnly } = require("../middleware/auth");
 
-// Brute-force protection on login
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: { error: "Too many login attempts. Try again in 15 minutes." },
-  skip: () => process.env.NODE_ENV === "test",
-  validate: false,
-});
+// Brute-force protection on login — disabled entirely in test env
+const loginLimiter =
+  process.env.NODE_ENV === "test"
+    ? (req, res, next) => next()
+    : rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 10,
+        message: { error: "Too many login attempts. Try again in 15 minutes." },
+        validate: false,
+      });
 
 // ── REGISTER ──
 router.post(
@@ -43,6 +45,7 @@ router.post(
       );
       res.status(201).json({ token, user: { id: user._id, name, email, role: user.role } });
     } catch (err) {
+      console.error("REGISTER ERROR:", err);
       res.status(500).json({ error: err.message });
     }
   }
@@ -75,6 +78,7 @@ router.post(
       );
       res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
     } catch (err) {
+      console.error("LOGIN ERROR:", err);
       res.status(500).json({ error: err.message });
     }
   }
