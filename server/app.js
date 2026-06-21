@@ -27,4 +27,16 @@ app.get("/", (req, res) => {
   res.json({ message: "Paws Rescue API is running", status: "OK" });
 });
 
+const allowedOrigins = process.env.CLIENT_URL
+  ? [process.env.CLIENT_URL, "http://localhost:3000"]
+  : ["http://localhost:3000"];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(null, true); // allow all for now; tighten later
+  },
+  credentials: true,
+}));
+
 module.exports = app;
