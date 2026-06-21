@@ -1,18 +1,18 @@
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://paws-rescue-platform.onrender.com';
+
 const api = axios.create({
-  baseURL: '/',
+  baseURL: API_URL,
   timeout: 10000,
 });
 
-// Attach JWT token from localStorage to every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// Auto-logout on 401/403
 api.interceptors.response.use(
   (res) => res,
   (err) => {
